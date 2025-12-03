@@ -29,3 +29,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Execute Application and Print Key Output
+      run: mvn -B exec:java -Dexec.mainClass="com.example.App" --file pom.xml
+
