@@ -1,36 +1,14 @@
-name: Multi-Env Deployment
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Choose environment"
-        required: true
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-
+name: Example: Env and Secrets
+on: [push]
+env:
+  ENVIRONMENT: prod
 jobs:
-  deploy:
+  show-vars:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-
-      - name: Run Java app with environment-specific API key
-        env:
-          DEPLOY_ENV: ${{ github.event.inputs.environment }}
-          API_KEY: ${{ secrets.API_KEY }}
-        run: |
-          javac App.java
-          java App
+        uses: actions/checkout@v3
+      - name: Print environment variable
+        run: echo "App is running in $ENVIRONMENT"
+      - name: Use secure API key
+        run: echo "Using API key: ${{ secrets.MY_API_KEY }}"
