@@ -1,14 +1,18 @@
-name: Example: Env and Secrets
-on: [push]
+on:
+  push:
+
 env:
   ENVIRONMENT: prod
+
 jobs:
   show-vars:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Print environment variable
-        run: echo "App is running in $ENVIRONMENT"
+        run: echo "App is running in ${{ env.ENVIRONMENT }}"
+
       - name: Use secure API key
         run: echo "Using API key: ${{ secrets.MY_API_KEY }}"
