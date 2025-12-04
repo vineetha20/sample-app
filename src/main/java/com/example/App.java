@@ -1,3 +1,4 @@
+package com.example
 public class App {
     public static void main(String[] args) {
         String apiKey = System.getenv("API_KEY");
