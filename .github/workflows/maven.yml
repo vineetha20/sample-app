@@ -33,5 +33,5 @@ jobs:
           DEPLOY_ENV: ${{ github.event.inputs.environment }}
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          javac App.java
-          java App
+          javac src/main/java/com/example/App.java
+          java -cp src/main/java com.example.App
