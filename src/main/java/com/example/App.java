@@ -1,3 +1,5 @@
+package com.example;
+
 public class App {
     public static void main(String[] args) {
         // Read environment name and API key from environment variables
