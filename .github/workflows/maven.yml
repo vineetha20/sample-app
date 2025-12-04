@@ -35,13 +35,13 @@ jobs:
       # Use prod secret when ENV=prod
       - name: Run app (prod)
         if: env.ENV == 'prod'
-        run: java -cp src/main/java/com/example App
+        run: java -cp target/classes com.example.App
         env:
           API_KEY: ${{ secrets.API_KEY }}
 
       # Use dev secret when ENV=dev
       - name: Run app (dev)
         if: env.ENV == 'dev'
-        run: java -cp src/main/java/com/example App
+        run: java -cp target/classes com.example.App
         env:
           API_KEY: ${{ secrets.API_KEY_DEV }}
