@@ -15,4 +15,6 @@ jobs:
         run: echo "App is running in ${{ env.ENVIRONMENT }}"
 
       - name: Use secure API key
-        run: echo "Using API key: ${{ secrets.API_KEY }}"
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: echo "Using API key:$API_KEY"
