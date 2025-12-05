@@ -1,14 +1,48 @@
-name: Example: Env and Secrets
-on: [push]
-env:
-  ENVIRONMENT: prod
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+      - develop
 jobs:
-  show-vars:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'develop' && 'dev' || 'prod' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Print environment variable
-        run: echo "App is running in $ENVIRONMENT"
-      - name: Use secure API key
-        run: echo "Using API key: ${{ secrets.MY_API_KEY }}"
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn clean package
+      - name: Set environment label
+        run: |
+          if [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo "ENV=dev" >> $GITHUB_ENV
+          else
+            echo "ENV=prod" >> $GITHUB_ENV
+          fi
+      
+      # Debug step to check if secret exists (will show masked output)
+      - name: Debug secret
+        run: |
+          if [[ -z "${{ secrets.API_KEY_DEV }}" ]]; then
+            echo "API_KEY_DEV secret is NOT set"
+          else
+            echo "API_KEY_DEV secret IS set"
+          fi
+      
+      - name: Run app (prod)
+        if: env.ENV == 'prod'
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: java -cp target/classes com.example.App
+      
+      - name: Run app (dev)
+        if: env.ENV == 'dev'
+        env:
+          API_KEY: ${{ secrets.API_KEY_DEV }}
+        run: java -cp target/classes com.example.App
