@@ -3,7 +3,7 @@ package com.example;
 public class App {
     public static void main(String[] args) {
         String env = System.getenv("ENV");
-        String apiKey = System.getproperty("API_KEY");
+        String apiKey = System.getProperty("API_KEY");
 
         System.out.println("Environment: " + env);
 
