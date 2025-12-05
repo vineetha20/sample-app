@@ -7,6 +7,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'develop' && 'dev' || 'prod' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
