@@ -1,29 +1,22 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
       - main
       - develop
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-
       - name: Build with Maven
         run: mvn clean package
-
-      # Decide environment label based on branch name
       - name: Set environment label
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
@@ -31,18 +24,24 @@ jobs:
           else
             echo "ENV=prod" >> $GITHUB_ENV
           fi
-
-      # Use prod secret when ENV=prod
+      
+      # Debug step to check if secret exists (will show masked output)
+      - name: Debug secret
+        run: |
+          if [[ -z "${{ secrets.API_KEY_DEV }}" ]]; then
+            echo "API_KEY_DEV secret is NOT set"
+          else
+            echo "API_KEY_DEV secret IS set"
+          fi
+      
       - name: Run app (prod)
         if: env.ENV == 'prod'
-        run: java -cp target/classes com.example.App
         env:
           API_KEY: ${{ secrets.API_KEY }}
-
-      # Use dev secret when ENV=dev
+        run: java -cp target/classes com.example.App
+      
       - name: Run app (dev)
         if: env.ENV == 'dev'
         env:
           API_KEY: ${{ secrets.API_KEY_DEV }}
-        run: java -cp target/classes com.example.App  # Remove the -D flag
-  
+        run: java -cp target/classes com.example.App
